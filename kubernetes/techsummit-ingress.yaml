@@ -2,8 +2,8 @@ apiVersion: networking.k8s.io/v1beta1 # for versions before 1.14 use extensions/
 kind: Ingress
 metadata:
   name: techsummit-ingress
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$1
+#  annotations:
+#    nginx.ingress.kubernetes.io/rewrite-target: /$1
 spec:
   rules:
   - host: sample-php.techsummit
@@ -13,10 +13,6 @@ spec:
         backend:
           serviceName: httpd
           servicePort: 8080
-      - path: /v2/*
-        backend:
-          serviceName: web2
-          servicePort: 8080
   - host: guestbook.techsummit
     http:
       paths:
@@ -24,7 +20,3 @@ spec:
         backend:
           serviceName: frontend
           servicePort: 80
-      - path: /v2/*
-        backend:
-          serviceName: web2
-          servicePort: 8080
