@@ -4,9 +4,9 @@ version: '3'
 services:
   guestbook:
     build: .
-    image: guestbook
+    image: gcr.io/google-samples/gb-frontend:v4
     ports:
-      - 80:80
+      - 8080:80
     links:
       - redismaster:redis-master
       - redisslave:redis-slave
