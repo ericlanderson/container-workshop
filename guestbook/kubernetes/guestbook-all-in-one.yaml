@@ -1,3 +1,17 @@
+apiVersion: networking.k8s.io/v1beta1 # for versions before 1.14 use extensions/v1beta1
+kind: Ingress
+metadata:
+  name: guestbook
+spec:
+  rules:
+  - host: guestbook.techsummit
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: frontend
+          servicePort: 80
+---
 apiVersion: v1
 kind: Service
 metadata:
