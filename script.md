@@ -3,6 +3,8 @@ Script
 
 Can be used to copy-paste from here to the Terminal/Powershell instead of all of that typing.
 
+This document lives at https://github.com/ericlanderson/container-workshop.
+
 Preliminaries
 -------------
 ```
@@ -43,6 +45,7 @@ The following is executed from within the container.
 # apt update && apt -y install iputils-ping
 
 # ping 1.1.1.1
+
 
 # exit
 ```
