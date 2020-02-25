@@ -16,3 +16,4 @@ ADD guestbook.php /var/www/html/guestbook.php
 ADD controllers.js /var/www/html/controllers.js
 ADD index.html /var/www/html/index.html
 ADD version.php /var/www/html/version.php
+ADD info.php /var/www/html/info.php

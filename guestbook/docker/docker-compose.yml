@@ -5,6 +5,7 @@ services:
   guestbook:
     build: .
     image: gcr.io/google-samples/gb-frontend:v4
+#    image: guestbook:v7.4
     ports:
       - 8080:80
     links:
