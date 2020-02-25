@@ -22,10 +22,6 @@ First steps with Docker.
 
 	$ docker run hello-world
 
-	$ docker pull ubuntu
-
-	$ docker run ubuntu
-
 Run a container based on the Ubuntu image and start an interactive shell with bash so we can run commands inside the container:
 
 	$ docker run --interactive --tty ubuntu bash
@@ -104,12 +100,13 @@ Change the image we are using to one that supports our PHP content but note that
 	
 	$ ls -l php
 	
-	$ docker exec -it web-server ls -l 
-Add a file from the host and see it appear inside the container:
-
-	$ touch php/testfile.txt
+	$ docker exec web-server ls -l
 	
-	$ docker exec -it web-server ls -l
+Add a file inside the container using the touch command and see that it exists on the host:
+
+	$ docker exec web-server touch php/testfile.txt
+	
+	$ ls -l php
 	
 Let's make it easier
 --------------------
@@ -150,12 +147,16 @@ Our first deployment
 --------------------
 
 	$ kubectl create deployment web-server --image httpd
+
+        $ kubectl get all
+
+        $ kubectl get deployment/web-server
 	
-	$ kubectl get all
+	$ kubectl get deployment/web-server -o yaml
 	
-	$ kubectl exec -it deployment/apache bash
+	$ kubectl exec -it deployment/web-server bash
 	
-	$ kubectl logs deployment/apache
+	$ kubectl logs deployment/web-server
 	
 Expose our deployment
 ---------------------
@@ -168,6 +169,8 @@ Expose our deployment
 
 	$ kubectl port-forward deployment/web-server 8080:80
 	
+	Browser: http://localhost:8080
+	
 An aside for Ingress
 --------------------
 	$ kubectl apply -f techsummit-ingress.yaml
@@ -175,6 +178,8 @@ An aside for Ingress
 	$ kubectl get ingress
 	
 	$ kubectl describe ingress
+	
+	Browser: http://sample-php.techsummit
 	
 Change the image
 ----------------
@@ -189,15 +194,15 @@ Update the replicas
 -------------------
 Update the number of replicas from 1 to 3.
 
-	$ kubectl edit deployment/apache
+	$ kubectl edit deployment/web-server
 
-	$ kubectl describe deployment/apache
+	$ kubectl describe deployment/web-server
 
 View the service and see we now have three endpoints.
 
 	$ kubectl get services
 	
-	$ kubectl scale --replicas 1 deployment/apache
+	$ kubectl scale --replicas 1 deployment/web-server
 	
 Tag our image and update
 ------------------------
@@ -207,6 +212,8 @@ Tag (version) our Docker image and then edit the deployment to use this version 
 		
 	$ kubectl edit deployment/web-server
 	
+	$ kubectl get pods
+	
 Edit the Dockerfile and change the image from 7.0 to 7.2.
 
 	$ docker build -t my-php-app:7.2 .
@@ -215,7 +222,7 @@ Edit the Dockerfile and change the image from 7.0 to 7.2.
 	
 Undo the change from the command line.
 
-	$ kubectl rollout undo deployment/apache
+	$ kubectl rollout undo deployment/web-server
 	
 Guestbook app... Docker
 -----------------------
@@ -226,6 +233,8 @@ Guestbook app... Docker
 	
 	$ docker-compose up -d
 	
+	Browser: http://localhost:8080
+	
 	$ docker-compose kill
 	
 Guestbook app... K8s
@@ -234,6 +243,8 @@ Guestbook app... K8s
 	$ cd ../kubernetes
 	
 	$ kubectl apply -f guestbook-all-in-one.yaml
+	
+	Browser: http://guestbook.techsummit
 	
 	$ kubectl get all
 	
