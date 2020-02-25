@@ -24,8 +24,7 @@ First steps with Docker.
 
 Run a container based on the Ubuntu image and start an interactive shell with bash so we can run commands inside the container:
 
-	$ docker run --interactive --tty ubuntu bash
-
+	$ docker run -it ubuntu bash
 
 Verify the version of the container, run top and install ping:
 
@@ -83,6 +82,8 @@ Run the webserver again but map port 80 from the container to port 8080 on the h
 
 	$ docker run -d --rm --name web-server --publish 8080:80 httpd
 	
+	Browser: http://localhost:8080
+	
 	$ docker kill web-server
 	
 Adding content
@@ -93,18 +94,26 @@ Let's add some content and map the ./php directory into the container where Apac
 	$ docker run -d --rm --name web-server --volume ${PWD}/php:/usr/local/apache2/htdocs -p 8080:80 httpd
 	
 	$ docker logs web-server
+	
+	$ docker kill web-server
 
 Change the image we are using to one that supports our PHP content but note that the PHP image expects the content in a different location (/var/www/html):
 
 	$ docker run -d --rm --name web-server -v ${PWD}/php:/var/www/html -p 8080:80 php:7.0-apache
 	
-	$ ls -l php
+	Browser: http://localhost:8080/info.php
 	
-	$ docker exec web-server ls -l
+	$ ls -l php
 	
 Add a file inside the container using the touch command and see that it exists on the host:
 
-	$ docker exec web-server touch php/testfile.txt
+	$ docker exec -it web-server bash
+	
+	# touch testfile.txt
+	
+	# ls -l
+	
+	# exit
 	
 	$ ls -l php
 	
@@ -127,9 +136,9 @@ We can exec into the container but we will use the "service" defined in the dock
 Let's build an image
 --------------------
 
-	$ docker build -t my-php-app .
+	$ docker build -t my-php-app:7.0 .
 	
-	$ docker run -d --rm --name web-server -p 8080:80 my-php-app
+	$ docker run -d --rm --name web-server -p 8080:80 my-php-app:7.0
 	
 Getting started: Kubernetes
 ------------------------------
@@ -148,9 +157,9 @@ Our first deployment
 
 	$ kubectl create deployment web-server --image httpd
 
-        $ kubectl get all
+	$ kubectl get all
 
-        $ kubectl get deployment/web-server
+	$ kubectl describe deployment/web-server
 	
 	$ kubectl get deployment/web-server -o yaml
 	
@@ -161,15 +170,17 @@ Our first deployment
 Expose our deployment
 ---------------------
 
-	$ kubectl expose deployment/web-server --port 8080 --target-port 80 --name httpd
-	
-	$ kubectl get services -o yaml
-	
-	$ kubectl describe services httpd
-
 	$ kubectl port-forward deployment/web-server 8080:80
 	
 	Browser: http://localhost:8080
+	
+	$ kubectl expose deployment/web-server --port 8080 --target-port 80 --name httpd
+	
+	$ kubectl get services httpd -o yaml
+	
+	$ kubectl describe services httpd
+
+	
 	
 An aside for Ingress
 --------------------
